@@ -28,7 +28,6 @@ def Load_Frames(folder_path):
     return video_frames
 
 def Shot_Change_Detection(frames, ts, tb):
-    t = 0
     pred_shot_change = []
     diffs = []
     
@@ -65,9 +64,6 @@ def Shot_Change_Detection(frames, ts, tb):
                 
         prev_hist = hist
             
-        t += 1
-        print('\r' + '[Progress]:|%s%s|%.2f%%;' % ('█' * int(t * 20 / len(frames)), ' ' * (20 - int(t * 20 / len(frames))), float(t / len(frames) * 100)), end='')
-                
 
     return pred_shot_change, diffs
 
@@ -90,19 +86,23 @@ def Remove_Consecutive_Changes(changes):
 
 
 #news
-news_prediction, news_diffs = Shot_Change_Detection(Load_Frames('news_out'), 0.09, 0.1)
+news_prediction, news_diffs = Shot_Change_Detection(Load_Frames('dataset/news_frames'), 0.09, 0.1)
 news_prediction = Remove_Consecutive_Changes(news_prediction)
 news_P , news_R = Precision_Recall(news_prediction, news_ground)
 print('\n\nNews:\n  Precision: %s\n  Recall: %s\n' % (news_P, news_R))
 
 #climate
 climate_P_list , climate_R_list = [], []
+t = 0
 for i in range(5, 55, 5):
-    climate_prediction, climate_diffs = Shot_Change_Detection(Load_Frames('climate_out'), i / 1000, 0.1)
+    climate_prediction, climate_diffs = Shot_Change_Detection(Load_Frames('dataset/climate_frames'), i / 1000, 0.1)
     climate_prediction = [x + 1 for x in climate_prediction]
     climate_P , climate_R = Precision_Recall(climate_prediction, climate_ground)
     climate_P_list.append(climate_P)
     climate_R_list.append(climate_R)
+    t += 1
+    print('\r' + '[Progress]:|%s%s|%.2f%%;' % ('█' * int(t), ' ' * (10 - int(t)), float(t / 10 * 100)), end='')
+          
     
 plt.plot(climate_R_list, climate_P_list)
 plt.xlabel('Recall')
@@ -112,29 +112,19 @@ plt.show()
 
 # ngc
 ngc_P_list , ngc_R_list = [], []
+t = 0
 for i in range(5, 55, 5):
-    ngc_prediction, ngc_diffs = Shot_Change_Detection(Load_Frames('ngc_out'), i / 1000, 0.1)
+    ngc_prediction, ngc_diffs = Shot_Change_Detection(Load_Frames('dataset/ngc_out_frames'), i / 1000, 0.1)
     ngc_prediction = [x + 1 for x in ngc_prediction]
     ngc_P , ngc_R = Precision_Recall(ngc_prediction, ngc_ground)
     ngc_P_list.append(ngc_P)
     ngc_R_list.append(ngc_R)
+    t += 1
+    print('\r' + '[Progress]:|%s%s|%.2f%%;' % ('█' * int(t), ' ' * (10 - int(t)), float(t / 10 * 100)), end='')
     
 plt.plot(ngc_R_list, ngc_P_list)
 plt.xlabel('Recall')
 plt.ylabel('Precision')
 plt.title('PR Curve for NGC')
 plt.show()
-
-
-
-
-# 繪製以x軸為幀數、y軸為diffs的點圖
-'''plt.figure(figsize=(10, 5))
-plt.scatter(list(range(1, 1781)), climate_diffs, color='b', alpha=0.7)
-plt.xlabel('Frame Number')
-plt.ylabel('Histogram Difference')
-plt.title('Histogram Difference for Climate Video')
-plt.grid(True)
-plt.tight_layout()
-plt.show()'''
 
