@@ -30,10 +30,10 @@ The following algorithm is designed to detect shot changes in the videos:
 
 ## Results and Analysis
 
-1. News\
-   **Precision**: 0.8571428571428571\
-   **Recall**: 0.8571428571428571
-2. Climate\
+1. **News**\
+   Precision: 0.8571428571428571\
+   Recall: 0.8571428571428571
+2. **Climate**\
    ![image](https://github.com/liangchingyun/img-folder/blob/main/Video-Shot-Change-Detection_PRcurve_Climate.png)
-3. NGC\
+3. **NGC**\
    ![image](https://github.com/liangchingyun/img-folder/blob/main/Video-Shot-Change-Detection_PRcurve_NGC.png)
